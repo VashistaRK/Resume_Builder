@@ -1,0 +1,150 @@
+/* === Import Google Fonts === */
+@import url("https://fonts.googleapis.com/css2?family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@300..700&family=Dancing+Script:wght@400..700&family=Goldman:wght@400;700&family=Rubik+Dirt&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+
+/* === Tailwind & Plugin Imports === */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* === Theme Font Variables === */
+@theme {
+  --font-mine: "Exo 2", sans-serif;
+  --font-mine2: "Red Hat Display", sans-serif;
+  --font-Rammetto: "Amaranth", cursive;
+  --font-Quick: "Quicksand", sans-serif;
+  --font-Rubik: "Rubik Dirt", system-ui;
+  --font-dancing:"Dancing Script", cursive;
+  --font-goldman:"Goldman", sans-serif;
+}
+
+/* === Dark Mode Variant === */
+@custom-variant dark (&:is(.dark *));
+
+/* === Print Styling === */
+@media print {
+  #no-print {
+    display: none !important;
+  }
+  #print-area {
+    display: block;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  @page {
+    size: auto;
+    margin: 0;
+  }
+}
+
+/* === Avatar Sizing Override (Clerk) === */
+[class*="cl-internal"][class*="avatar"] {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* === Keyframes & Animations === */
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-scroll {
+  display: flex;
+  animation: scroll 20s linear infinite;
+}
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+.btn-shine {
+  display: inline-block;
+  background: linear-gradient(to right, #9f9f9f 0, #fff 10%, #868686 20%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine 3s linear infinite;
+  white-space: nowrap;
+}
+
+/* === Loader Sliding Effect === */
+@keyframes hideAndSeek {
+  0% {
+    transform: translateY(4rem);
+  }
+  100% {
+    transform: translateY(0rem);
+  }
+}
+.loader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.loader-span {
+  display: inline-block;
+  transform: translateY(4rem);
+  animation: hideAndSeek 1s alternate infinite cubic-bezier(0.86, 0, 0.07, 1);
+}
+
+
+/* === Base Styles ===
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+} */
+
+/* === Theme Colors & Radius === */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: rgb(196, 98, 251);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
