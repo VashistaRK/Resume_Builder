@@ -1,5 +1,10 @@
 node_modules
 build
 dist
-.git
 .vscode
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+*.md
