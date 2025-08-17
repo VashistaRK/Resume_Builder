@@ -1,5 +1,5 @@
-import fs from "fs";
-import https from "https";
+// import fs from "fs";
+// import https from "https";
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
@@ -30,16 +30,15 @@ app.use(express.json());
 
 
 //for https
-const options = {
-  key: fs.readFileSync("./certs/server.key"),
-  cert: fs.readFileSync("./certs/server.cert"),
-};
+// const options = {
+//   key: fs.readFileSync("./certs/server.key"),
+//   cert: fs.readFileSync("./certs/server.cert"),
+// };
 
-https.createServer(options, app).listen(5000, () => {
-  console.log("HTTPS server running on port 5000");
-});
+// https.createServer(options, app).listen(5000, () => {
+//   console.log("HTTPS server running on port 5000");
+// });
 
-//till here
 
 connectDB();
 
