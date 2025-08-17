@@ -1,13 +1,16 @@
 # Stage 1: Build
-FROM node:20-slim AS builder
+FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve with Nginx
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Install a simple static server
+RUN npm install -g serve
+
+# Expose frontend port
+EXPOSE 3000
+
+# Start frontend (adjust if backend also runs here)
+CMD ["serve", "-s", "dist", "-l", "3000"]

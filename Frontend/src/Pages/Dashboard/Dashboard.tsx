@@ -20,8 +20,8 @@ const Dashboard: React.FC = () => {
 
     setLoading(true);
     GlobalApi.GetUserResumes(userId)
-      .then((resp) => {
-        setResumeList(resp.data || []); // ✅ updated here
+      .then((resumes) => {
+        setResumeList(resumes || []); // ✅ updated here
       })
       .catch((err) => {
         console.error("Failed to fetch resumes:", err);

@@ -19,31 +19,34 @@ function ViewResume() {
   const { getToken } = useAuth();
 
   useEffect(() => {
-    if (resumeid) fetchResumeInfo(resumeid);
+  if (resumeid) fetchResumeInfo(resumeid);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resumeid]);
+}, [resumeid]);
 
-  const fetchResumeInfo = async (id: string) => {
-    try {
-      const token = await getToken();
-      if (!token) {
-        toast("Not authorized");
-        return;
-      }
-
-      const response = await GlobalApi.GetResumeById(id, token);
-      const data = response.data;
-      if (!data) {
-        toast.error("Resume not found.");
-        return;
-      }
-      setTemplate(data.template);
-      setResumeInfo(data);
-    } catch (error) {
-      console.error("Failed to fetch resume info:", error);
-      toast.error("Failed to load resume.");
+const fetchResumeInfo = async (id: string) => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      toast.error("Not authorized");
+      return;
     }
-  };
+
+    // GlobalApi.GetResumeById already returns the data directly
+    const data = await GlobalApi.GetResumeById(id, token);
+
+    if (!data) {
+      toast.error("Resume not found.");
+      return;
+    }
+
+    setTemplate(data.template || 1);
+    setResumeInfo(data);
+  } catch (error) {
+    console.error("Failed to fetch resume info:", error);
+    toast.error("Failed to load resume.");
+  }
+};
+
 
   const HandleDownload = () => window.print();
 

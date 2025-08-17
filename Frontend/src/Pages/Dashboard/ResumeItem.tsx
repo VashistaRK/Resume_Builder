@@ -58,7 +58,10 @@ function ResumeItem({ resume, refreshData }: ResumeItemProps) {
         console.error(error);
         toast("Failed to delete resume.");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        refreshData();
+      });
   };
 
   const onRename = async () => {
@@ -85,7 +88,10 @@ function ResumeItem({ resume, refreshData }: ResumeItemProps) {
         console.error("Rename failed:", err);
         toast("Failed to rename resume.");
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        refreshData();
+      });
   };
 
   return (

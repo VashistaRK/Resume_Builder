@@ -39,29 +39,28 @@ const EditResume: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
 
   useEffect(() => {
-    const fetchResume = async () => {
-      if (!resumeid) return setError("No resume ID found.");
-      if (showTemplates) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
+  const fetchResume = async () => {
+    if (!resumeid) return setError("No resume ID found.");
+    try {
+      setLoading(true);
+      const token = await getToken();
+      if (!token) {
+        setError("User not authenticated.");
+        return;
       }
-      try {
-        setLoading(true);
-        const token = await getToken();
-        if (!token) return setError("User is not authenticated.");
-        const { data } = await GlobalApi.GetResumeById(resumeid, token);
-        setResumeInfo(data);
-        setSelectedTemplate(data?.template || 1);
-      } catch (err) {
-        console.error("Failed to fetch resume:", err);
-        setError("Failed to load resume.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchResume();
-  }, [resumeid, getToken, showTemplates]);
+      const resumeData = await GlobalApi.GetResumeById(resumeid, token);
+      setResumeInfo(resumeData);
+      setSelectedTemplate(resumeData?.template || 1);
+    } catch (err) {
+      console.error("Failed to fetch resume:", err);
+      setError("Failed to load resume.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchResume();
+}, [resumeid, getToken]); // ✅ removed showTemplates
+
 
   const updateTemplate = async (templateNumber: number) => {
     if (!resumeid) return;

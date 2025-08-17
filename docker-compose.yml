@@ -3,7 +3,7 @@ services:
     build: ./Frontend
     image: vashista/resumeforge-frontend:latest
     ports:
-      - "3000:80"
+      - "3000:3000"
     depends_on:
       - backend
     networks:
@@ -16,7 +16,7 @@ services:
       - "5000:5000"
     networks:
       - mern-net
-      
+
   redis:
     image: redis:latest
     container_name: redis-server
@@ -24,7 +24,6 @@ services:
       - "6379:6379"
     networks:
       - mern-net
-
 
 volumes:
   mongo-data:
