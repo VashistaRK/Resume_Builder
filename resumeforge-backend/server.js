@@ -1,5 +1,6 @@
 import express from "express"
 import cors from "cors"
+import nodemailer from "nodemailer";
 import { connectDB } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import dotenv from "dotenv";
@@ -49,5 +50,46 @@ app.use("/uploads", express.static("uploads"));
 app.get('/',(req,res) => {
     res.send('API WORKING')
 })
+
+// POST /api/contact/send-email
+app.post("/api/contact/send-email", async (req, res) => {
+  const { name, email, company, phone, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ success: false, message: "Missing fields" });
+  }
+
+  // Configure transporter
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // your Gmail address
+      pass: process.env.EMAIL_PASS, // app password (not your real Gmail password)
+    },
+  });
+
+  const mailOptions = {
+    from: email,
+    to: "your-email@example.com", // 👈 replace with your recipient email
+    subject: `New Contact Form Submission from ${name}`,
+    text: `
+      Name: ${name}
+      Company: ${company || "N/A"}
+      Email: ${email}
+      Phone: ${phone || "N/A"}
+      Message: ${message}
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: "Email sent successfully!" });
+  } catch (err) {
+    console.error("Error sending email:", err);
+    res.status(500).json({ success: false, message: "Email sending failed" });
+  }
+});
+
+
 
 app.listen(PORT,()=>{console.log(`server Started :${PORT}`)})

@@ -26,7 +26,7 @@ const CoverLetters = () => {
       try {
         // ✅ Fetch metadata
         const metaRes = await axios.get(
-          "http://localhost:5000/api/coverletters"
+          `${import.meta.env.VITE_BASE_URL}/api/coverletters`
         );
         const metadata = metaRes.data;
 

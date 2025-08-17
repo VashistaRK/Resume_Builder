@@ -28,7 +28,7 @@ const ContactPage = () => {
 
     try {
       const response = await fetch(
-        "https://ai-resume-builder-strapi-k452.onrender.com/api/contact/send-email",
+        `${import.meta.env.VITE_BASE_URL}/api/contact/send-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
