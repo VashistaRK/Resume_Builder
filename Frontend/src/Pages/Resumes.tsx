@@ -34,19 +34,19 @@ const ResumeTemplates = () => {
 
   // ✅ Fetch templates from backend
   useEffect(() => {
-  const fetchTemplates = async () => {
-    try {
-      const data = await GlobalApi.GETResumeTemplates();
-      setTemplates(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-      setLoading(false);
-    }
-  };
+    const fetchTemplates = async () => {
+      try {
+        const data = await GlobalApi.GETResumeTemplates();
+        setTemplates(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching templates:", error);
+        setLoading(false);
+      }
+    };
 
-  fetchTemplates();
-}, []);
+    fetchTemplates();
+  }, []);
 
   // ✅ Filtered templates based on active category
   const filteredTemplates = useMemo(
@@ -152,7 +152,8 @@ const ResumeTemplates = () => {
           </h2>
 
           <p className="text-gray-300 max-w-2xl mb-10 text-lg px-4">
-            Choose from a wide range of professionally designed resume templates to stand out in your career journey.
+            Choose from a wide range of professionally designed resume templates
+            to stand out in your career journey.
           </p>
         </div>
       </div>
@@ -161,7 +162,9 @@ const ResumeTemplates = () => {
       <div className="min-h-screen bg-[#0e0e0e] text-white px-4 py-10">
         <div className="max-w-5xl mx-auto text-center mb-10">
           <h1 className="text-4xl font-bold mb-3">Resume Templates</h1>
-          <p className="text-gray-400">Explore professionally designed resume templates by category.</p>
+          <p className="text-gray-400">
+            Explore professionally designed resume templates by category.
+          </p>
 
           <div className="flex flex-wrap justify-center gap-4 mt-6 border-b border-gray-700 pb-4">
             {categoryKeys.map((cat) => (
@@ -183,7 +186,9 @@ const ResumeTemplates = () => {
         {/* Templates Grid */}
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {loading ? (
-            <div className="col-span-full text-center text-gray-400 text-lg py-10">Loading templates...</div>
+            <div className="col-span-full text-center text-gray-400 text-lg py-10">
+              Loading templates...
+            </div>
           ) : filteredTemplates.length > 0 ? (
             filteredTemplates.map((template) => (
               <div
@@ -206,7 +211,9 @@ const ResumeTemplates = () => {
 
                 <div className="p-4">
                   <h3 className="text-lg font-bold mb-2">{template.name}</h3>
-                  <p className="text-gray-400 text-sm">{template.description}</p>
+                  <p className="text-gray-400 text-sm">
+                    {template.description}
+                  </p>
                   {width < 1200 && renderButtonGroup(template)}
                 </div>
               </div>
@@ -237,12 +244,16 @@ const ResumeTemplates = () => {
                 alt={selectedImage.name}
                 className="object-contain max-h-full rounded-md transition-transform"
                 style={{
-                  transform: `scale(${zoomLevel}) translate(${position.x / zoomLevel}px, ${position.y / zoomLevel}px)`,
+                  transform: `scale(${zoomLevel}) translate(${
+                    position.x / zoomLevel
+                  }px, ${position.y / zoomLevel}px)`,
                   cursor: isDragging ? "grabbing" : "grab",
                 }}
                 onWheel={(e) => {
                   e.preventDefault();
-                  setZoomLevel((prev) => Math.min(Math.max(prev + e.deltaY * -0.001, 1), 3));
+                  setZoomLevel((prev) =>
+                    Math.min(Math.max(prev + e.deltaY * -0.001, 1), 3)
+                  );
                 }}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
@@ -253,7 +264,9 @@ const ResumeTemplates = () => {
 
             {width >= 1200 && (
               <div className="w-full sm:w-1/3 h-full p-6 overflow-y-auto">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedImage.name}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  {selectedImage.name}
+                </h2>
                 <p className="text-gray-700">{selectedImage.description}</p>
               </div>
             )}

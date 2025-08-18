@@ -2,11 +2,15 @@ import type { ReactNode } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Navigate } from "react-router-dom";
 
-const allowedAdmins: string[] = ["shoterking1357@gmail.com"]; // replace with your admin email
-
 interface Props {
   children: ReactNode;
 }
+
+const allowedAdmins: string[] = import.meta.env.VITE_ADMIN_EMAILS
+  ? import.meta.env.VITE_ADMIN_EMAILS.split(",").map((email: string) =>
+      email.trim()
+    )
+  : [];
 
 const AdminAuthGuard = ({ children }: Props) => {
   const { user, isLoaded } = useUser();
@@ -16,7 +20,7 @@ const AdminAuthGuard = ({ children }: Props) => {
   const email = user?.primaryEmailAddress?.emailAddress ?? "";
 
   if (!allowedAdmins.includes(email)) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
