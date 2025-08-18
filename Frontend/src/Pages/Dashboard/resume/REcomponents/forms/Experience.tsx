@@ -48,7 +48,7 @@ const Experience: React.FC<ExperienceProps> = ({ enableNext }) => {
     if (resumeInfo) {
       setResumeInfo({
         ...resumeInfo,
-        Experience: updatedList,
+        experience: updatedList,
       });
     }
   };
@@ -61,6 +61,8 @@ const Experience: React.FC<ExperienceProps> = ({ enableNext }) => {
     const updatedList = [...experienceList];
     if (name === "responsibilities") {
       updatedList[index].responsibilities = value.split("\n");
+    } else {
+      (updatedList[index] as any)[name] = value;
     }
     enableNext(false);
     setExperienceList(updatedList);
@@ -73,10 +75,29 @@ const Experience: React.FC<ExperienceProps> = ({ enableNext }) => {
     updateResumeInfo(updatedList);
   };
 
-  const removeExperience = () => {
+  const removeExperience = async () => {
+    if (experienceList.length === 0) return;
+
     const updatedList = experienceList.slice(0, -1);
     setExperienceList(updatedList);
     updateResumeInfo(updatedList);
+
+    if (!resumeid) return;
+
+    try {
+      const token = await getToken();
+      if (token) {
+        await GlobalApi.UpdateResumeDetails(
+          resumeid,
+          { data: { experience: updatedList } },
+          token
+        );
+        toast.success("Experience removed");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to remove experience");
+    }
   };
 
   // handleRichTextEditor
@@ -109,7 +130,7 @@ const Experience: React.FC<ExperienceProps> = ({ enableNext }) => {
 
     const data = {
       data: {
-        Experience: experienceList.map(({ id, ...rest }) => rest),
+        experience: experienceList,
       },
     };
     try {

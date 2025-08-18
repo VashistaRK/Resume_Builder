@@ -20,7 +20,13 @@ import { toast } from "sonner";
 import { AIChatSession } from "../../service/AIModal";
 
 // Import types from your types file (adjust path as needed)
-import type { Experience, Education, Project, Certification } from "@/types/types";
+import type {
+  OtherSkills,
+  Experience,
+  Education,
+  Project,
+  Certification,
+} from "@/types/types";
 
 const jobAnalysisPromptTemplate = `
 Analyze this job description and provide:
@@ -109,75 +115,77 @@ export const JobAnalysisDisplay: React.FC<{
 
   // Function to check if keywords exist in resume
   const checkKeywordsInResume = (keywords: string[]): KeywordItem[] => {
-  if (!resumeInfo) {
-    return keywords.map((k) => ({ keyword: k, isFound: false }));
-  }
+    if (!resumeInfo) {
+      return keywords.map((k) => ({ keyword: k, isFound: false }));
+    }
 
-  const resumeText = [
-    resumeInfo.summary || "",
-    resumeInfo.jobTitle || "",
-    // Experience section
-    ...(resumeInfo.experience || []).map((exp: Experience) =>
-      [
-        exp.position || "",
-        exp.company || "",
-        (exp.responsibilities || []).join(" "),
-        exp.location || "",
-        exp.duration || "",
-      ].join(" ")
-    ),
-    // Education section
-    ...(resumeInfo.education || []).map((edu: Education) =>
-      [
-        edu.degree || "",
-        edu.major || "",
-        edu.college || "",
-        edu.description || "",
-        edu.gpa || "",
-        edu.location || "",
-        edu.year || "",
-      ].join(" ")
-    ),
-    // Skills section - combining all skill fields
-    resumeInfo.skills?.languages || "",
-    resumeInfo.skills?.tools || "",
-    resumeInfo.skills?.coursework || "",
-    // Projects section
-    ...(resumeInfo.projects || []).map((project: Project) =>
-      [
-        project.name || "",
-        project.description || "",
-        project.role || "",
-        project.technologies || "",
-        project.duration || "",
-        project.link || "",
-      ].join(" ")
-    ),
-    // Certifications section
-    ...(resumeInfo.certifications || []).map((cert: Certification) =>
-      [
-        cert.name || "",
-        cert.description || "",
-        cert.technologies || "",
-        cert.date || "",
-        cert.link || "",
-      ].join(" ")
-    ),
-    // Technical skills
-    ...(resumeInfo.technicalSkills || []),
-    // Other sections
-    resumeInfo.academicAchievements || "",
-    resumeInfo.volunteerExperience || "",
-  ]
-    .join(" ")
-    .toLowerCase();
+    const resumeText = [
+      resumeInfo.summary || "",
+      resumeInfo.jobTitle || "",
+      // Experience section
+      ...(resumeInfo.experience || []).map((exp: Experience) =>
+        [
+          exp.position || "",
+          exp.company || "",
+          (exp.responsibilities || []).join(" "),
+          exp.location || "",
+          exp.duration || "",
+        ].join(" ")
+      ),
+      // Education section
+      ...(resumeInfo.education || []).map((edu: Education) =>
+        [
+          edu.degree || "",
+          edu.major || "",
+          edu.college || "",
+          edu.description || "",
+          edu.gpa || "",
+          edu.location || "",
+          edu.year || "",
+        ].join(" ")
+      ),
+      // Skills section - combining all skill fields
+      resumeInfo.skills?.languages || "",
+      resumeInfo.skills?.tools || "",
+      resumeInfo.skills?.coursework || "",
+      ...(resumeInfo.skills?.other || []).map((other: OtherSkills) => [
+        other.name || "",
+      ]),
+      // Projects section
+      ...(resumeInfo.projects || []).map((project: Project) =>
+        [
+          project.name || "",
+          project.description || "",
+          project.role || "",
+          project.technologies || "",
+          project.duration || "",
+          project.link || "",
+        ].join(" ")
+      ),
+      // Certifications section
+      ...(resumeInfo.certifications || []).map((cert: Certification) =>
+        [
+          cert.name || "",
+          cert.description || "",
+          cert.technologies || "",
+          cert.date || "",
+          cert.link || "",
+        ].join(" ")
+      ),
+      // Technical skills
+      ...(resumeInfo.technicalSkills || []),
+      // Other sections
+      resumeInfo.academicAchievements || "",
+      resumeInfo.volunteerExperience || "",
+    ]
+      .join(" ")
+      .toLowerCase();
 
-  return keywords.map((keyword) => ({
-    keyword,
-    isFound: resumeText.includes(keyword.toLowerCase()),
-  }));
-};
-
+    return keywords.map((keyword) => ({
+      keyword,
+      isFound: resumeText.includes(keyword.toLowerCase()),
+    }));
+  };
 
   // Update keyword checking whenever resume info changes
   useEffect(() => {
@@ -187,11 +195,33 @@ export const JobAnalysisDisplay: React.FC<{
     }
   }, [resumeInfo, jobAnalysis]);
 
-  const copyKeyword = (keyword: string) => {
-    navigator.clipboard.writeText(keyword);
-    toast.success(`"${keyword}" copied to clipboard!`, {
-      duration: 2000,
-    });
+  const copyKeyword = async (text: string) => {
+    if (navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast.success(`"${text}" copied to clipboard!`, {
+          duration: 2000,
+        });
+        return;
+      } catch (err) {
+        console.error("Clipboard API failed:", err);
+      }
+    }
+
+    // Fallback: create temporary textarea
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      toast.success(`"${text}" copied to clipboard!`, {
+        duration: 2000,
+      });
+    } catch (err) {
+      console.error("Fallback copy failed:", err);
+    }
+    document.body.removeChild(textarea);
   };
 
   const foundKeywordsCount = keywordItems.filter((item) => item.isFound).length;
@@ -520,16 +550,16 @@ const JobDescription: React.FC<JobDescriptionProps> = ({ enableNext }) => {
 
       {jobAnalysis && showAnalysisExpanded && (
         <div className="text-purple-800">
-        <JobAnalysisDisplay onToggleView={toggleAnalysisView} />
+          <JobAnalysisDisplay onToggleView={toggleAnalysisView} />
         </div>
       )}
 
       {jobAnalysis && !showAnalysisExpanded && (
         <div className="text-purple-800">
-        <JobAnalysisDisplay
-          showMinimized={true}
-          onToggleView={toggleAnalysisView}
-        />
+          <JobAnalysisDisplay
+            showMinimized={true}
+            onToggleView={toggleAnalysisView}
+          />
         </div>
       )}
 

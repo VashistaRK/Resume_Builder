@@ -27,8 +27,8 @@ const Education: React.FC<EducationP> = ({ enableNext }) => {
       college: "",
       degree: "",
       major: "",
-      gpa:"",
-      location:"",
+      gpa: "",
+      location: "",
       year: "",
       description: "",
     },
@@ -75,8 +75,8 @@ const Education: React.FC<EducationP> = ({ enableNext }) => {
         degree: "",
         major: "",
         year: "",
-        gpa:"",
-        location:"",
+        gpa: "",
+        location: "",
         description: "",
       },
     ];
@@ -113,8 +113,7 @@ const Education: React.FC<EducationP> = ({ enableNext }) => {
         setLoading(false);
         return;
       }
-      const resp = await GlobalApi.UpdateResumeDetails(resumeid, data, token);
-      console.log(resp);
+      await GlobalApi.UpdateResumeDetails(resumeid, data, token);
       toast.success("Details updated!");
       enableNext(true);
     } catch (error) {
@@ -155,7 +154,7 @@ const Education: React.FC<EducationP> = ({ enableNext }) => {
             <div>
               <label>Major</label>
               <Input
-              placeholder="Ex: 8.5 cgpa"
+                placeholder="Ex: 8.5 cgpa"
                 name="major"
                 value={item.major}
                 onChange={(e) => handleChange(e, index)}

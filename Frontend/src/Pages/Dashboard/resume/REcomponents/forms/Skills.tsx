@@ -11,18 +11,18 @@ import { JobAnalysisContext, JobAnalysisDisplay } from "@/forms/JobDescription";
 
 import { useAuth } from "@clerk/clerk-react"; // ✅ Import useAuth for token
 
-interface SkillsProps{
+interface SkillsProps {
   enableNext: (enabled: boolean) => void;
 }
 
-const Skills:React.FC<SkillsProps>=({enableNext})=> {
+const Skills: React.FC<SkillsProps> = ({ enableNext }) => {
   const [skills, setSkills] = useState<SkillsType>({
     languages: "",
     tools: "",
     coursework: "",
     other: [],
   });
-const { getToken } = useAuth(); //
+  const { getToken } = useAuth(); //
   const { resumeid } = useParams<{ resumeid: string }>();
   const [loading, setLoading] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
@@ -89,10 +89,10 @@ const { getToken } = useAuth(); //
 
     try {
       const token = await getToken();
-      if(!token){
+      if (!token) {
         toast("User is not authenticated.");
-                setLoading(false);
-                return;
+        setLoading(false);
+        return;
       }
       await GlobalApi.UpdateResumeDetails(resumeid, data, token);
       toast.success("Skills updated!");
@@ -178,6 +178,6 @@ const { getToken } = useAuth(); //
       )}
     </div>
   );
-}
+};
 
 export default Skills;

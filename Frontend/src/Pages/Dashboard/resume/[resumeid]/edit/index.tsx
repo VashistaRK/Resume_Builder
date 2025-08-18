@@ -39,28 +39,27 @@ const EditResume: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
 
   useEffect(() => {
-  const fetchResume = async () => {
-    if (!resumeid) return setError("No resume ID found.");
-    try {
-      setLoading(true);
-      const token = await getToken();
-      if (!token) {
-        setError("User not authenticated.");
-        return;
+    const fetchResume = async () => {
+      if (!resumeid) return setError("No resume ID found.");
+      try {
+        setLoading(true);
+        const token = await getToken();
+        if (!token) {
+          setError("User not authenticated.");
+          return;
+        }
+        const resumeData = await GlobalApi.GetResumeById(resumeid, token);
+        setResumeInfo(resumeData);
+        setSelectedTemplate(resumeData?.template || 1);
+      } catch (err) {
+        console.error("Failed to fetch resume:", err);
+        setError("Failed to load resume.");
+      } finally {
+        setLoading(false);
       }
-      const resumeData = await GlobalApi.GetResumeById(resumeid, token);
-      setResumeInfo(resumeData);
-      setSelectedTemplate(resumeData?.template || 1);
-    } catch (err) {
-      console.error("Failed to fetch resume:", err);
-      setError("Failed to load resume.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchResume();
-}, [resumeid, getToken]); // ✅ removed showTemplates
-
+    };
+    fetchResume();
+  }, [resumeid, getToken]); // ✅ removed showTemplates
 
   const updateTemplate = async (templateNumber: number) => {
     if (!resumeid) return;
@@ -69,7 +68,7 @@ const EditResume: React.FC = () => {
       if (!token) return toast("Not authorized");
       await GlobalApi.UpdateResumeDetails(
         resumeid,
-        { data: { template: templateNumber } },
+        { template: templateNumber },
         token
       );
       setSelectedTemplate(templateNumber);

@@ -49,29 +49,34 @@ function RichTextEditor({
     try {
       const prompt = PROMPT.replace("{positionTitle}", title);
       const result = await AIChatSession.sendMessage(prompt);
-      const raw = await result.response.text();
+      let raw = (await result?.response?.text?.()) || "";
       // console.log("Raw AI response:", raw);
 
       // Since the prompt asks for HTML format, directly use the response
       // Clean up the response to ensure it's valid HTML
       let cleanedResponse = raw.trim();
-      
+
       // Remove any markdown code blocks if present
-      cleanedResponse = cleanedResponse.replace(/```html\n?/g, '').replace(/```\n?/g, '');
-      
-      let newValue = '';
-      
+      cleanedResponse = cleanedResponse
+        .replace(/```html\n?/g, "")
+        .replace(/```\n?/g, "");
+
+      let newValue = "";
+
       // Check if the response contains a <ul> tag
-      if (cleanedResponse.includes('<ul>') && cleanedResponse.includes('</ul>')) {
+      if (
+        cleanedResponse.includes("<ul>") &&
+        cleanedResponse.includes("</ul>")
+      ) {
         newValue = cleanedResponse;
       } else {
         // If no proper HTML structure, treat as plain text and convert to HTML
-        const lines = cleanedResponse.split('\n').filter(line => line.trim());
+        const lines = cleanedResponse.split("\n").filter((line) => line.trim());
         newValue = `<ul>${lines
-          .map(line => `<li>${line.replace(/^[-*•]\s*/, '').trim()}</li>`)
-          .join('')}</ul>`;
+          .map((line) => `<li>${line.replace(/^[-*•]\s*/, "").trim()}</li>`)
+          .join("")}</ul>`;
       }
-      
+
       setValue(newValue);
       onRichTextEditorChange(newValue);
       toast("Summary generated successfully!");
@@ -84,13 +89,16 @@ function RichTextEditor({
   }, [resumeInfo, index, onRichTextEditorChange]);
 
   // Memoize the onChange handler to prevent unnecessary re-renders
-  const handleEditorChange = useCallback((_event: any, editor: any) => {
-    const data = editor.getData();
-    if (data !== value) {
-      setValue(data);
-      onRichTextEditorChange(data);
-    }
-  }, [value, onRichTextEditorChange]);
+  const handleEditorChange = useCallback(
+    (_event: any, editor: any) => {
+      const data = editor.getData();
+      if (data !== value) {
+        setValue(data);
+        onRichTextEditorChange(data);
+      }
+    },
+    [value, onRichTextEditorChange]
+  );
 
   return (
     <div>
