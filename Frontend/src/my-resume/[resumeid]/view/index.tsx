@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 import PreviewSection from "@/Pages/Dashboard/resume/REcomponents/PreviewSection";
 import ResumeTemlete from "@/Pages/Dashboard/resume/Templete2/ResumeTemplete";
+import { Home } from "lucide-react";
 
 function ViewResume() {
   const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
@@ -19,34 +20,33 @@ function ViewResume() {
   const { getToken } = useAuth();
 
   useEffect(() => {
-  if (resumeid) fetchResumeInfo(resumeid);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [resumeid]);
+    if (resumeid) fetchResumeInfo(resumeid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeid]);
 
-const fetchResumeInfo = async (id: string) => {
-  try {
-    const token = await getToken();
-    if (!token) {
-      toast.error("Not authorized");
-      return;
+  const fetchResumeInfo = async (id: string) => {
+    try {
+      const token = await getToken();
+      if (!token) {
+        toast.error("Not authorized");
+        return;
+      }
+
+      // GlobalApi.GetResumeById already returns the data directly
+      const data = await GlobalApi.GetResumeById(id, token);
+
+      if (!data) {
+        toast.error("Resume not found.");
+        return;
+      }
+
+      setTemplate(data.template || 1);
+      setResumeInfo(data);
+    } catch (error) {
+      console.error("Failed to fetch resume info:", error);
+      toast.error("Failed to load resume.");
     }
-
-    // GlobalApi.GetResumeById already returns the data directly
-    const data = await GlobalApi.GetResumeById(id, token);
-
-    if (!data) {
-      toast.error("Resume not found.");
-      return;
-    }
-
-    setTemplate(data.template || 1);
-    setResumeInfo(data);
-  } catch (error) {
-    console.error("Failed to fetch resume info:", error);
-    toast.error("Failed to load resume.");
-  }
-};
-
+  };
 
   const HandleDownload = () => window.print();
 
@@ -69,14 +69,17 @@ const fetchResumeInfo = async (id: string) => {
             Congrats! Your Ultimate ATS score Resume is ready!
           </h2>
           <p className="text-center">
-            Now you are ready to download your resume and share your unique Identity.
+            Now you are ready to download your resume and share your unique
+            Identity.
           </p>
           <p className="font-semibold text-red-900 text-center mb-3">
-            <span className="text-black font-bold">&#8595; NOTE &#8595;</span><br />
-            If your resume exceeds one page while downloading, <br />go to
+            <span className="text-black font-bold">&#8595; NOTE &#8595;</span>
+            <br />
+            If your resume exceeds one page while downloading, <br />
+            go to
             <strong> More Settings</strong> &rarr; <strong>Scale</strong> &rarr;{" "}
-            <strong>Custom</strong> and  <br /> adjust the scale until everything fits
-            on a single page.
+            <strong>Custom</strong> and <br /> adjust the scale until everything
+            fits on a single page.
           </p>
 
           <div className="flex justify-center px-44 space-x-10">
@@ -91,6 +94,13 @@ const fetchResumeInfo = async (id: string) => {
               className="max-w-40 bg-neutral-500 hover:bg-stone-500"
             >
               Edit
+            </Button>
+            <Button
+              onClick={() => navigate(`/dashboard`)}
+              className="max-w-40 bg-neutral-500 hover:bg-stone-500"
+            >
+              <Home />
+              Home
             </Button>
           </div>
         </div>

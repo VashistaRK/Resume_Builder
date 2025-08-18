@@ -23,7 +23,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: [process.env.Frontend_PORT, "https://your-frontend-domain.com"], // adjust for frontend
+  origin: [process.env.Frontend_PORT1, process.env.Frontend_PORT2, "http://localhost:3000", "https://localhost:3000"], // adjust for frontend
   credentials: true
 }));
 app.use(express.json());

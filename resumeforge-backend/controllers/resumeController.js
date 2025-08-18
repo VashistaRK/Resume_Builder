@@ -87,7 +87,7 @@ export const CreateResume = async (req, res) => {
         languages: "JavaScript, Python, Java",
         tools: "Git, Docker, VS Code, Postman",
         coursework: "Data Structures, Algorithms, Database Management Systems, Operating Systems",
-        other: [{name: "Agile Methodologies"},{name: "REST APIs"}]
+        other: [{ name: "Agile Methodologies" }, { name: "REST APIs" }]
       },
       technicalSkills: [
         "React.js", "Node.js", "Express.js", "MongoDB", "MySQL", "HTML", "CSS", "JavaScript", "Python", "Git", "Docker"
@@ -103,8 +103,8 @@ export const CreateResume = async (req, res) => {
       userId: req.auth.userId,
       title,
       resumeid,
-      userEmail,
-      userName
+      userEmail: userEmail || "no-email@example.com",
+      userName: userName || "Anonymous",
     });
 
     console.log(`✅ Resume created for user ${req.auth.userId}: ${title}`);
@@ -127,14 +127,14 @@ export const getUserResumes = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: "Missing userId" });
     }
-    
+
     const cacheKey = `resumes:${userId}`;
     const cached = await client.get(cacheKey);
     if (cached) {
       console.log("⚡ Cache hit");
       return res.json(JSON.parse(cached));
     }
-    
+
     console.log("🔍 Fetching resumes for userId:", userId);
 
     const resumes = await Resume.find({ userId }).sort({ updatedAt: -1 });
@@ -158,7 +158,7 @@ export const getResumeById = async (req, res) => {
     if (cached) {
       return res.json(JSON.parse(cached));
     }
-    
+
     const resume = await Resume.findOne({ _id: req.params.id, userId: req.auth.userId });
     if (!resume) {
       return res.status(404).json({ message: "Resume not found" });

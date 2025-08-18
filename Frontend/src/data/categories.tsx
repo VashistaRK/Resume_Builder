@@ -3,7 +3,7 @@ import {
   FaBriefcase,
   FaGoogle,
   FaFileWord,
-  FaStar,
+  // FaStar,
   FaPalette,
   FaHeart,
   FaImage,
@@ -21,16 +21,16 @@ export interface Category {
 }
 
 export const categories: Record<string, Category> = {
-  "Expert Choice": {
-    icon: <FaStar className="text-yellow-400" />,
-    gradient:
-      "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:border-transparent",
-    border: "text-white border-2",
-    sty: "",
-    accentColor: "yellow",
-    description:
-      "Handpicked templates by our experts, offering the best balance of design, readability, and impact.",
-  },
+  // "Expert Choice": {
+  //   icon: <FaStar className="text-yellow-400" />,
+  //   gradient:
+  //     "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:border-transparent",
+  //   border: "text-white border-2",
+  //   sty: "",
+  //   accentColor: "yellow",
+  //   description:
+  //     "Handpicked templates by our experts, offering the best balance of design, readability, and impact.",
+  // },
   Professional: {
     icon: <FaBriefcase className="text-blue-500" />,
     gradient: "radial-gradient(circle at top left, #bfdbfe, #dbeafe, #eff6ff)",

@@ -18,7 +18,7 @@ type AddResumeProps = {
   refreshData: () => void;
 };
 
-const AddResume = ({refreshData}:AddResumeProps) => {
+const AddResume = ({ refreshData }: AddResumeProps) => {
   const { getToken } = useAuth();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [resumeTitle, setResumeTitle] = useState<string>("");
@@ -32,38 +32,41 @@ const AddResume = ({refreshData}:AddResumeProps) => {
   };
 
   const onCreate = async () => {
-  const token = await getToken();
-  if (!token) {
-    throw new Error("User is not authenticated");
-  }
-  if (!user) return;
+    const token = await getToken();
+    if (!token) {
+      throw new Error("User is not authenticated");
+    }
+    if (!user) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  const resumeId = uuidv4();
-  const resumeData = {
-    title: resumeTitle,
-    resumeid: resumeId,
-    userEmail: user?.primaryEmailAddress?.emailAddress,
-    userName: user?.fullName ?? undefined,
+    const resumeId = uuidv4();
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      console.error("User email not available");
+      setLoading(false);
+      return;
+    }
+    const resumeData = {
+      title: resumeTitle,
+      resumeid: resumeId,
+      userEmail: user?.primaryEmailAddress?.emailAddress,
+      userName: user?.fullName || "Anonymous",
+    };
+
+    try {
+      const response = await GlobalApi.CreateNewResume(resumeData, token);
+      console.log("Resume created:", response.data);
+      setResumeTitle("");
+      setOpenDialog(false);
+
+      // ✅ Call refresh here after creation
+      refreshData();
+    } catch (error) {
+      console.error("Failed to create resume:", error);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  try {
-    const response = await GlobalApi.CreateNewResume(resumeData, token);
-    console.log("Resume created:", response.data);
-    setResumeTitle("");
-    setOpenDialog(false);
-    
-    // ✅ Call refresh here after creation
-    refreshData();
-
-  } catch (error) {
-    console.error("Failed to create resume:", error);
-  } finally {
-    setLoading(false);
-  }
-};
-
 
   return (
     <div className="text-white">
